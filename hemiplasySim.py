@@ -18,6 +18,8 @@ def freqAfterTime(initialFrequency, popSize, estimatedTimeStep, totalTime):
         while(notReturnedValue):
             try:
                 alleleFreq = coal.sample_freq_CDF(alleleFreq, popSize, timeStep);
+            except KeyboardInterrupt:
+                raise;
             except:
                 print "Failure occured with frequency ", alleleFreq;
             else:
@@ -37,11 +39,12 @@ def simulate(p, timeStem, timeBranch, N=1e7, k=10, m = 10, numSteps = 100):
     sumEstimatedProb = 0.0;
 
     for i in range(k):
-        alleleFreq = p;
-        alleleFreq = freqAfterTime(alleleFreq, N, estimatedTimeStep, timeStem);
-        
+        alleleFreq = 0.0;
+        while(alleleFreq == 0.0):
+            alleleFreq = freqAfterTime(p, N, estimatedTimeStep, timeStem);
+
         #print "Allele Frequency after Stem is ",alleleFreq;
-        if (alleleFreq == 0.0 or alleleFreq == 1.0):
+        if (alleleFreq == 1.0):
             continue;
         
         for j in range(m):
