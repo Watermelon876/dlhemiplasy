@@ -12,23 +12,15 @@ def hemiplasy():
     # create variables and output file
     output = open('/home/muddcs15/research/work/hemiplasy/data/real-fungi-rel/hemiplasy-loss.txt','w')
     count = 0
-    
+
+    # define a list of all species and lists of each of the species pairs in separate lists
     species = ['scer','agos','calb','cpar','cgui','spar','klac''ctro','lelo','dlhan','smik','sbay','cgla','scas','kwal','clus']
     species1 = ['scer','agos','calb','cpar','cgui']
     species2 = ['spar','klac','ctro','lelo','dlhan']
-    speciesPartners = {'scer':'spar',
-                       'spar':'scer',
-                       'agos':'klac',
-                       'klac':'agos',
-                       'calb':'ctro',
-                       'ctro':'calb',
-                       'cpar':'lelo',
-                       'lelo':'cpar',
-                       'cgui':'dlhan',
-                       'dlhan':'cgui'}
     
-    # loop over number of fam id
+    # loop over each fam id
     for famid in xrange(5351):
+        # make standard check = False, create locus dictionary, convert famid to a string, and open dup file of fam id
         check = False
         locus_dict = collections.defaultdict(list)
         strfam = str(famid)
@@ -44,9 +36,10 @@ def hemiplasy():
         # if the file is not empty, run the loop
         if statinfo.st_size != 0:
 
-            # find location in species tree where each locus was created
+            # create a dictionary for [locus] = species tree location
             locus_sname = {}
             f = open('/home/muddcs15/research/work/hemiplasy/data/real-fungi/%d/%d.dlcoal.dlcpar.dup.rel.txt' % (famid,famid))
+            # find location in species tree where each locus was created
             for line in f:
                 locus, gns1, gns2, sname = line.rstrip().split('\t')
                 locus_sname[locus] = sname
@@ -61,13 +54,11 @@ def hemiplasy():
                 # store dict of key = locus, val = list of (gene, species) in locus
                 locus_dict[locus].append((gn, sp))
                 
-            # for each locus, determine if genes in locus satisfy the properties                
-            for locus, lst in locus_dict.iteritems():
+                # for each locus, determine if genes in locus satisfy the properties for a possible hemiplasy
                 sps = [sp for (gn,sp) in lst]
                 gns = [gn for (gn,sp) in lst]
                 
                 # check if exists in only one species in a pair
-                # for sp1, sp2 in speciesPartners.iteritems():
                 for sp1, sp2 in zip(species1, species2):
                     if (sp1 in sps and sp2 not in sps) or \
                         (sp2 in sps and sp1 not in sps):
@@ -101,6 +92,7 @@ def hemiplasy():
         if check:
             count += 1
             
+    # print total count and close output file        
     print "Total number of true cases =", count
     output.close()
     

@@ -6,7 +6,7 @@ from dlcoal import duploss
 import StringIO
 import re
 
-def timeB(birthRate, deathRate, premn, trials):
+def times(birthRate, deathRate, premn, trials):
     """
     A funtion that outputs the time from a duplication to a node
     INPUT:
@@ -54,11 +54,13 @@ def timeB(birthRate, deathRate, premn, trials):
             nodeTime = duploss.sample_dup_times(ltree, stree, recon, birthRate, deathRate, pretime=None, premean=premn)
             t_x=nodeTime[node]
             dupAge = t_x - float(nodeAge)
+            # make sure there is no computational error when calculating dupAge
             if (0 <= dupAge < 1e-13) or (0 >= dupAge > -1e-13) :
                 dupAge = 0.0
+            # add the dupAge to the time list     
             time_list+=[str(dupAge)]
             
-        # convert list to comma separated string to output into file
+        # convert the time list to comma separated string
         time_string = ",".join(time_list)
 
         # output the family id, the node age, and the difference between duplication time and node to output file
@@ -70,4 +72,4 @@ def timeB(birthRate, deathRate, premn, trials):
     
     
 if __name__ == "__main__":
-    timeB(0.000732, 0.000859, 90.0, 100)
+    times(0.000732, 0.000859, 90.0, 100)
