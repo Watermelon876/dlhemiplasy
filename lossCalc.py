@@ -18,4 +18,4 @@ def calculate(timeStem, timeBranch, effPopSize = 1e7, lambd = 0.000732, mu = 0.0
     p0b = 1.0*((mu * (1.0-w)) / (lambd-(mu*w)));
     p1b = 1.0*((((lambd-mu)**2)*w) / (lambd - mu*w)**2);
 
-    return lambd*mu*p0b*p1b*p1s/((mu-lambd*(p0b**2)*p0s)**2);
+    return 2*(lambd*mu*p0b*p1b*p1s/(((mu-lambd*(p0b**2)*p0s)**2))*(1-p0s));
