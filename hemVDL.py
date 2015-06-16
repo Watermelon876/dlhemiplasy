@@ -38,10 +38,10 @@ def calculateProbsFromFile(filename, outputFile = "probabilities.txt", initialFr
             writeStream.write(str(probHemiplasy)+" ");
 
             if(probHemiplasy > probDL):
-                print "Hemiplasy is the more probable option"
+                #print "Hemiplasy is the more probable option"
                 numHemiplasy += 1;
             else:
-                print "It probably occured by Duplication-Loss events"
+                #print "It probably occured by Duplication-Loss events"
                 numDL += 1;
         
         writeStream.write("\n");

@@ -6,7 +6,11 @@ from dlcoal import duploss
 import StringIO
 import re
 
-def times(birthRate, deathRate, premn, trials):
+def times(birthRate = 0.000732,
+          deathRate = 0.000859,
+          premn = 90.0,
+          trials = 100,
+          dataPath = '/home/muddcs15/research/work/hemiplasy/data/'):
     """
     A funtion that outputs the time from a duplication to a node
     INPUT:
@@ -16,15 +20,15 @@ def times(birthRate, deathRate, premn, trials):
     trials = number of times to run sample_dup_times to get multiple differences between speciation and duplication events
     """
     # open the file with the list of duplications and read the species tree
-    duplications = open('/home/muddcs15/research/work/hemiplasy/data/real-fungi-rel/hemiplasy-loss.txt','r')
-    stree = treelib.read_tree('/home/muddcs15/research/work/hemiplasy/data/config/fungi.stree')
+    duplications = open('/home/muddcs15/research/work/hemiplasy/results/hemiplasy-loss.txt','r')
+    stree = treelib.read_tree(dataPath + 'config/fungi.stree')
 
     # get the ages of the nodes and the timestamps of the species tree
     times = treelib.get_tree_timestamps(stree)
     ages = treelib.get_tree_ages(stree)
 
     # open an output file
-    output = open('/home/muddcs15/research/work/hemiplasy/data/real-fungi-rel/totaltimes.txt','w')
+    output = open('/home/muddcs15/research/work/hemiplasy/input/totaltimes1.txt','w')
 
     # go through each family id with a duplication that met the prerequisites
     for line in duplications:
@@ -33,8 +37,8 @@ def times(birthRate, deathRate, premn, trials):
         famid, locus, leaf_sps, leaf_gns, dup_sp, daughter_snode_sp = line.rstrip().split('\t')
                 
         # read the locus tree and the reconcilitation file
-        locus_tree_filename = '/home/muddcs15/research/work/hemiplasy/data/real-fungi/%s/%s.dlcoal.locus.tree' % (famid, famid)
-        locus_recon_filename = '/home/muddcs15/research/work/hemiplasy/data/real-fungi/%s/%s.dlcoal.locus.recon' % (famid, famid)
+        locus_tree_filename = dataPath + 'real-fungi/%s/%s.dlcoal.locus.tree' % (famid, famid)
+        locus_recon_filename = dataPath + 'real-fungi/%s/%s.dlcoal.locus.recon' % (famid, famid)
         ltree = treelib.read_tree(locus_tree_filename)
         recon, events = phylo.read_recon_events(locus_recon_filename, ltree, stree)
 
@@ -72,4 +76,4 @@ def times(birthRate, deathRate, premn, trials):
     
     
 if __name__ == "__main__":
-    times(0.000732, 0.000859, 90.0, 100)
+    times()
