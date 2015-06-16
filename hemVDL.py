@@ -3,6 +3,9 @@ from hemiplasySim import simulate as HemiplasyProb
 
 def calcProbabilities(timeStem, timeBranch, N=1e7, lambd=0.000732, mu = 0.000859, initialFrequency=None):
     
+    # If no birth-death rates or population size is given, values taken for fungi population
+    # If initial frequency not given, taken to be 1/2N
+
     timeStem,timeBranch = timeStem*1.0e6, timeBranch*1.0e6
     
     if(initialFrequency == None):
