@@ -13,6 +13,10 @@ def boxPlot(x_axis = 'initialFreq',
             spectree = '/home/muddcs15/research/work/hemiplasy/data/config/fungi.stree'):
     """
     A function that will output boxplots of probability of hemiplasy and probability of hemiplasy over duploss vs. initial allele frequency
+    x_axis can be:
+    'initialFreq'
+    'pairs'
+    'dupLocation'
     """
 
     if x_axis == 'initialFreq':
