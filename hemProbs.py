@@ -1,6 +1,7 @@
 import os
+import collections
 import matplotlib.pyplot as plt
-from rasmus import stats
+from rasmus import stats, treelib
 
 def boxPlot(x_axis = 'initialFreq',
             dataPath = '/home/muddcs15/research/work/hemiplasy/results/',
@@ -8,12 +9,13 @@ def boxPlot(x_axis = 'initialFreq',
             prob2 = '0.01',
             prob3 = '0.05',
             prob4 = '0.1',
-            prob5 = '0.5'):
+            prob5 = '0.5',
+            spectree = '/home/muddcs15/research/work/hemiplasy/data/config/fungi.stree'):
     """
     A function that will output boxplots of probability of hemiplasy and probability of hemiplasy over duploss vs. initial allele frequency
     """
 
-    if x_axis == 'initialFreq'
+    if x_axis == 'initialFreq':
         events = open('/home/muddcs15/research/work/hemiplasy/results/hemiplasy-loss.error.txt', 'r')
 
         for line in events:
@@ -159,7 +161,8 @@ def boxPlot(x_axis = 'initialFreq',
                 # append percent by hemiplasy to perList and average for the famid to aveList
                 perList.append(percent)
                 aveList.append(ave)
-                
+
+                # get the number pair between which the hemiplasy could have occurred
                 for line in events:
                     ev_famid, locus, spcs, gns, snode, lca = line.rstrip().split('\t')
                     if famid == ev_famid:
@@ -173,7 +176,8 @@ def boxPlot(x_axis = 'initialFreq',
                                 spec_check = sp2
                                 specPos = species2.index(sp2)
                         break
-                        
+
+                # add the hemiplasy probability to the list of the pair in which it potentially occurred        
                 if specPos == 0:
                     pair1.append(ave)
                 if specPos == 1:
@@ -185,32 +189,29 @@ def boxPlot(x_axis = 'initialFreq',
                 if specPos == 4:
                     pair5.append(ave)
             events.close()
-                    
-            # append the lists through each famid to the large lists for each list of values
-            totalPerList.append(perList)
-            
-            totalAList.append(aveList)
             
 
             # close file
             probFile.close()
-            
+
+        # append the list of probabilities of hemiplasy for each pair as a separate list to the totalPairs list, creating a list of lists
         totalPairs.append(pair1)
         totalPairs.append(pair2)
         totalPairs.append(pair3)
         totalPairs.append(pair4)
         totalPairs.append(pair5)
-        
+
+        # define the plot's inputs
         plt.boxplot(totalPairs)
         plt.title('Hemiplasy by Pairs')
         plt.xlabel('Pair')
         plt.ylabel('Probability')
         
-        # print the plots
+        # print the plot
         plt.show()
 
     elif x_axis == 'dupLocation':
-        tree = treelib.read_tree(spectree) # species tree
+        stree = treelib.read_tree(spectree) # species tree
         species = stree.leaf_names()
         species1 = []
         species2 = []
@@ -282,7 +283,8 @@ def boxPlot(x_axis = 'initialFreq',
                 # append percent by hemiplasy to perList and average for the famid to aveList
                 perList.append(percent)
                 aveList.append(ave)
-                
+
+                # get the number pair between which the hemiplasy could have occurred
                 for line in events:
                     ev_famid, locus, spcs, gns, dup, lca = line.rstrip().split('\t')
                     if famid == ev_famid:
@@ -297,7 +299,7 @@ def boxPlot(x_axis = 'initialFreq',
                         break
                 
                 PDList.append((specPos, dup))
-
+            # add the duplication location and the hemiplasy probability to the list of the pair it was determined to have occurred in
             famNum = 0
             for pos, dpl in PDList:
                 if pos == 0:
@@ -322,17 +324,20 @@ def boxPlot(x_axis = 'initialFreq',
             # close file
             probFile.close()
 
-        # TODO: what does this do?
+        # create a dictionary with the lists of each pair
         finalPair = collections.defaultdict(list)
-        
+
+        # go through each pair list and get the duplication
         pairCount = 0
         for pairNum in pairList:
             pairCount += 1
             dup = collections.defaultdict(list)
-            
+
+            # get the probability pertaining to each duplication location and the pair, and append it to the dictionary 
             for (dupLoc, prob) in pairNum:
                 dup[dupLoc].append(prob)
 
+            # add each pair as a separate list of lists to the finalPair list 
             finalPair[pairCount].extend([dup[dupLoc] for dupLoc in xrange(1,14)])
        
                 
@@ -350,18 +355,21 @@ def boxPlot(x_axis = 'initialFreq',
         axes[0,1].set_ylabel('Probability')
         axes[0,1].set_ylim(0,0.25)
 
+        # define the third plot and its labels
         axes[0,2].boxplot(finalPair[3])
         axes[0,2].set_title('Pair3')
         axes[0,2].set_xlabel('Duplication Location')
         axes[0,2].set_ylabel('Probability')
         axes[0,2].set_ylim(0,0.25)
 
+        # define the fourth plot and its labels
         axes[1,0].boxplot(finalPair[4])
         axes[1,0].set_title('Pair4')
         axes[1,0].set_xlabel('Duplication Location')
         axes[1,0].set_ylabel('Probability')
         axes[1,0].set_ylim(0,0.25)
-
+        
+        # define the fifth plot and its labels
         axes[1,1].boxplot(finalPair[5])
         axes[1,1].set_title('Pair5')
         axes[1,1].set_xlabel('Duplication Location')
