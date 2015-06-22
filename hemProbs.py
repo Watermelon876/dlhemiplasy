@@ -10,13 +10,15 @@ def boxPlot(x_axis = 'initialFreq',
             prob3 = '0.05',
             prob4 = '0.1',
             prob5 = '0.5',
-            spectree = '/home/muddcs15/research/work/hemiplasy/data/config/fungi.stree'):
+            spectree = '/home/muddcs15/research/work/hemiplasy/data/config/fungi.stree',
+            output = 'save'):
     """
     A function that will output boxplots of probability of hemiplasy and probability of hemiplasy over duploss vs. initial allele frequency
     x_axis can be:
     'initialFreq'
     'pairs'
     'dupLocation'
+    output can be: 'save' or 'print'
     """
 
     if x_axis == 'initialFreq':
@@ -97,8 +99,15 @@ def boxPlot(x_axis = 'initialFreq',
         axes[1].set_xlabel('Initial Frequency')
         axes[1].set_ylabel('Probability')
 
-        # print the plots
-        plt.show()
+        # save the plots if that is desired
+        if output == 'save':
+            fig = plt.gcf()
+            fig.set_size_inches(10, 8)
+            fig.savefig(dataPath+'figures/freq.png')
+
+        # print the plots if that is desired
+        elif output == 'print':
+            plt.show()
 
     elif x_axis == 'pairs':
         stree = treelib.read_tree(spectree) # species tree
@@ -211,8 +220,15 @@ def boxPlot(x_axis = 'initialFreq',
         plt.xlabel('Pair')
         plt.ylabel('Probability')
         
-        # print the plot
-        plt.show()
+        # save the plots if that is desired
+        if output == 'save':
+            fig = plt.gcf()
+            fig.set_size_inches(10, 8)
+            fig.savefig(dataPath+'figures/pairs.png')
+
+        # print the plots if that is desired
+        elif output == 'print':
+            plt.show()
 
     elif x_axis == 'dupLocation':
         stree = treelib.read_tree(spectree) # species tree
@@ -380,8 +396,16 @@ def boxPlot(x_axis = 'initialFreq',
         axes[1,1].set_ylabel('Probability')
         axes[1,1].set_ylim(0,0.25)
 
-        # print the plots
-        plt.show()
+        plt.delaxes(axes[1,2])
+        # save the plots if that is desired
+        if output == 'save':
+            fig = plt.gcf()
+            fig.set_size_inches(15, 10)
+            fig.savefig(dataPath+'figures/dupLoc.png')
 
-if __name__ == "__main__":
-    boxPlot()
+        # print the plots if that is desired
+        elif output == 'print':
+            plt.show()
+
+##if __name__ == "__main__":
+##    boxPlot()
